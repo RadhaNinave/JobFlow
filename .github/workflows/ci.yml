@@ -11,29 +11,46 @@ on:
 
 jobs:
   build:
-    name: Build and Type Check
+    name: Build JobFlow
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Get the repository code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # 4. Check TypeScript
       - name: Type check
-        run: npm run lint
+        run: npx tsc --noEmit
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-      - name: Production build
+      # 5. Check MongoDB environment variable
+      - name: Check environment
+        run: |
+          if [ -z "$MONGODB_URI" ]; then
+            echo "MONGODB_URI is NOT available"
+            exit 1
+          else
+            echo "MONGODB_URI is available"
+          fi
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+
+      # 6. Build Next.js application
+      - name: Build application
         run: npm run build
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
