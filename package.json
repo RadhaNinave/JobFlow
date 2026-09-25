@@ -1,0 +1,10 @@
+{
+  "name": "jobflow-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {"dev":"next dev","build":"next build","start":"next start","lint":"tsc --noEmit","seed":"tsx scripts/seed.ts"},
+  "dependencies": {
+    "@hookform/resolvers":"^5.2.2","@tailwindcss/postcss":"^4.1.13","bcryptjs":"^3.0.2","jsonwebtoken":"^9.0.2","lucide-react":"^0.468.0","mongoose":"^8.18.0","next":"16.0.1","react":"19.2.0","react-dom":"19.2.0","react-hook-form":"^7.62.0","sonner":"^2.0.7","dotenv":"^17.2.2","zod":"^4.1.8"
+  },
+  "devDependencies":{"@types/jsonwebtoken":"^9.0.10","@types/node":"^24.5.2","@types/react":"^19.2.0","@types/react-dom":"^19.2.0","tsx":"^4.20.5","typescript":"^5.9.2"}
+}
