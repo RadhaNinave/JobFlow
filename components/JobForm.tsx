@@ -30,7 +30,7 @@ export default function JobForm({
       ...f,
       skills: f.skills
         .split(",")
-        .map((x) => x.trim())
+       .map((x: string) => x.trim())
         .filter(Boolean),
     };
     try {
