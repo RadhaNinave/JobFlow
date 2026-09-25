@@ -1,2 +1,79 @@
-"use client";import {useState} from "react";import {useRouter} from "next/navigation";import Link from "next/link";import {toast} from "sonner";import {Field} from "@/app/login/page";
-export default function Register(){const [form,setForm]=useState({name:"",email:"",password:""});const [loading,setLoading]=useState(false);const router=useRouter();async function submit(e:React.FormEvent){e.preventDefault();setLoading(true);try{const r=await fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(form)});const x=await r.json();if(!r.ok)throw new Error(x.message);toast.success("Account created successfully");router.push("/dashboard");router.refresh()}catch(e:any){toast.error(e.message||"Registration failed")}finally{setLoading(false)}}return <main className="min-h-[calc(100vh-64px)] flex items-center justify-center p-5"><div className="glass w-full max-w-md p-8"><h1 className="text-3xl font-black">Create your account</h1><p className="text-[#667085] mt-2 mb-7">Start discovering your next opportunity.</p><form onSubmit={submit} className="space-y-4"><Field label="Full name"><input className="input" required value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></Field><Field label="Email"><input className="input" type="email" required value={form.email} onChange={e=>setForm({...form,email:e.target.value})}/></Field><Field label="Password"><input className="input" type="password" minLength={6} required value={form.password} onChange={e=>setForm({...form,password:e.target.value})}/></Field><button disabled={loading} className="btn btn-primary w-full">{loading?"Creating…":"Create account"}</button></form><p className="text-center text-sm text-[#667085] mt-5">Already have an account? <Link href="/login" className="text-[#635bff] font-bold">Sign in</Link></p></div></main>}
+"use client";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { toast } from "sonner";
+import { Field } from "@/app/login/page";
+export default function Register() {
+  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const r = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const x = await r.json();
+      if (!r.ok) throw new Error(x.message);
+      toast.success("Account created successfully");
+      router.push("/dashboard");
+      router.refresh();
+    } catch (e: any) {
+      toast.error(e.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+  return (
+    <main className="min-h-[calc(100vh-64px)] flex items-center justify-center p-5">
+      <div className="glass w-full max-w-md p-8">
+        <h1 className="text-3xl font-black">Create your account</h1>
+        <p className="text-[#667085] mt-2 mb-7">
+          Start discovering your next opportunity.
+        </p>
+        <form onSubmit={submit} className="space-y-4">
+          <Field label="Full name">
+            <input
+              className="input"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+            />
+          </Field>
+          <Field label="Email">
+            <input
+              className="input"
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+            />
+          </Field>
+          <Field label="Password">
+            <input
+              className="input"
+              type="password"
+              minLength={6}
+              required
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+          </Field>
+          <button disabled={loading} className="btn btn-primary w-full">
+            {loading ? "Creating…" : "Create account"}
+          </button>
+        </form>
+        <p className="text-center text-sm text-[#667085] mt-5">
+          Already have an account?{" "}
+          <Link href="/login" className="text-[#635bff] font-bold">
+            Sign in
+          </Link>
+        </p>
+      </div>
+    </main>
+  );
+}

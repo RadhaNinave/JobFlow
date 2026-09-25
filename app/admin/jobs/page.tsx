@@ -1,2 +1,72 @@
-"use client";import {useEffect,useState} from "react";import Link from "next/link";import {toast} from "sonner";import {Plus,Trash2,Pencil} from "lucide-react";import {useRouter} from "next/navigation";
-export default function AdminJobs(){const [jobs,setJobs]=useState<any[]>([]);const router=useRouter();const load=()=>fetch("/api/jobs?admin=1").then(async r=>{if(r.status===403||r.status===401){router.push("/login");return}const x=await r.json();setJobs(x.data||[])});useEffect(()=>{load()},[]);async function del(id:string){if(!confirm("Delete this job?"))return;const r=await fetch(`/api/jobs/${id}`,{method:"DELETE"});const x=await r.json();if(!r.ok)toast.error(x.message);else{toast.success("Job deleted");load()}}return <main className="container-page"><div className="flex justify-between items-center mb-6"><div><h1 className="text-3xl font-black">Job listings</h1><p className="text-[#667085]">Manage your open positions.</p></div><Link href="/admin/jobs/new" className="btn btn-primary"><Plus size={16}/>New job</Link></div><div className="glass overflow-hidden">{jobs.map(j=><div key={j._id} className="p-5 border-b border-[#eaecf0] flex justify-between gap-4"><div><h3 className="font-bold">{j.title}</h3><p className="text-sm text-[#667085]">{j.company} • {j.location}</p></div><div className="flex gap-2"><Link href={`/admin/jobs/${j._id}`} className="btn btn-soft"><Pencil size={15}/></Link><button onClick={()=>del(j._id)} className="btn btn-danger"><Trash2 size={15}/></button></div></div>)}{jobs.length===0&&<div className="p-10 text-center text-[#667085]">No jobs yet.</div>}</div></main>}
+"use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { toast } from "sonner";
+import { Plus, Trash2, Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+export default function AdminJobs() {
+  const [jobs, setJobs] = useState<any[]>([]);
+  const router = useRouter();
+  const load = () =>
+    fetch("/api/jobs?admin=1").then(async (r) => {
+      if (r.status === 403 || r.status === 401) {
+        router.push("/login");
+        return;
+      }
+      const x = await r.json();
+      setJobs(x.data || []);
+    });
+  useEffect(() => {
+    load();
+  }, []);
+  async function del(id: string) {
+    if (!confirm("Delete this job?")) return;
+    const r = await fetch(`/api/jobs/${id}`, { method: "DELETE" });
+    const x = await r.json();
+    if (!r.ok) toast.error(x.message);
+    else {
+      toast.success("Job deleted");
+      load();
+    }
+  }
+  return (
+    <main className="container-page">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h1 className="text-3xl font-black">Job listings</h1>
+          <p className="text-[#667085]">Manage your open positions.</p>
+        </div>
+        <Link href="/admin/jobs/new" className="btn btn-primary">
+          <Plus size={16} />
+          New job
+        </Link>
+      </div>
+      <div className="glass overflow-hidden">
+        {jobs.map((j) => (
+          <div
+            key={j._id}
+            className="p-5 border-b border-[#eaecf0] flex justify-between gap-4"
+          >
+            <div>
+              <h3 className="font-bold">{j.title}</h3>
+              <p className="text-sm text-[#667085]">
+                {j.company} • {j.location}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Link href={`/admin/jobs/${j._id}`} className="btn btn-soft">
+                <Pencil size={15} />
+              </Link>
+              <button onClick={() => del(j._id)} className="btn btn-danger">
+                <Trash2 size={15} />
+              </button>
+            </div>
+          </div>
+        ))}
+        {jobs.length === 0 && (
+          <div className="p-10 text-center text-[#667085]">No jobs yet.</div>
+        )}
+      </div>
+    </main>
+  );
+}

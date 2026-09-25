@@ -1,1 +1,10 @@
-"use client";import JobForm from "@/components/JobForm";export default function NewJob(){return <main className="container-page max-w-3xl"><h1 className="text-3xl font-black mb-6">Create a job</h1><JobForm/></main>}
+"use client";
+import JobForm from "@/components/JobForm";
+export default function NewJob() {
+  return (
+    <main className="container-page max-w-3xl">
+      <h1 className="text-3xl font-black mb-6">Create a job</h1>
+      <JobForm />
+    </main>
+  );
+}

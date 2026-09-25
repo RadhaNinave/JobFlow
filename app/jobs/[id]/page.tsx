@@ -1,2 +1,92 @@
-"use client";import {useEffect,useState} from "react";import {useParams,useRouter} from "next/navigation";import {toast} from "sonner";import Link from "next/link";
-export default function JobDetail(){const {id}=useParams<{id:string}>();const [job,setJob]=useState<any>();const [note,setNote]=useState("");const [loading,setLoading]=useState(false);const router=useRouter();useEffect(()=>{fetch(`/api/jobs/${id}`).then(r=>r.json()).then(x=>setJob(x.data))},[id]);async function apply(){setLoading(true);try{const r=await fetch("/api/applications",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jobId:id,coverNote:note})});const x=await r.json();if(r.status===401){router.push("/login");return}if(!r.ok)throw new Error(x.message);toast.success("Application submitted successfully");setNote("")}catch(e:any){toast.error(e.message)}finally{setLoading(false)}}if(!job)return <main className="container-page">Loading…</main>;return <main className="container-page"><Link href="/jobs" className="text-[#635bff] font-bold">← Back to jobs</Link><div className="grid lg:grid-cols-[1fr_360px] gap-6 mt-5"><section className="glass p-8"><span className="badge badge-green">{job.isOpen?"Open position":"Closed"}</span><h1 className="text-4xl font-black mt-4">{job.title}</h1><p className="text-lg font-semibold mt-2">{job.company}</p><div className="flex gap-4 text-[#667085] mt-4"><span>{job.location}</span><span>•</span><span>{job.type}</span></div><hr className="my-7 border-[#eaecf0]"/><h3 className="font-black text-lg">About the role</h3><p className="whitespace-pre-line text-[#475467] mt-3 leading-7">{job.description}</p><div className="flex flex-wrap gap-2 mt-6">{job.skills.map((s:string)=><span className="badge badge-blue" key={s}>{s}</span>)}</div></section><aside className="glass p-6 h-fit sticky top-24"><h3 className="font-black text-xl">Ready to apply?</h3><p className="text-[#667085] mt-2">Send a short note with your application.</p><textarea className="input mt-5 min-h-32" value={note} onChange={e=>setNote(e.target.value)} placeholder="Tell the employer why you're a good fit..."/><button disabled={!job.isOpen||loading} onClick={apply} className="btn btn-primary w-full mt-3">{loading?"Applying…":"Apply now"}</button></aside></div></main>}
+"use client";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Link from "next/link";
+export default function JobDetail() {
+  const { id } = useParams<{ id: string }>();
+  const [job, setJob] = useState<any>();
+  const [note, setNote] = useState("");
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  useEffect(() => {
+    fetch(`/api/jobs/${id}`)
+      .then((r) => r.json())
+      .then((x) => setJob(x.data));
+  }, [id]);
+  async function apply() {
+    setLoading(true);
+    try {
+      const r = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId: id, coverNote: note }),
+      });
+      const x = await r.json();
+      if (r.status === 401) {
+        router.push("/login");
+        return;
+      }
+      if (!r.ok) throw new Error(x.message);
+      toast.success("Application submitted successfully");
+      setNote("");
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+  if (!job) return <main className="container-page">Loading…</main>;
+  return (
+    <main className="container-page">
+      <Link href="/jobs" className="text-[#635bff] font-bold">
+        ← Back to jobs
+      </Link>
+      <div className="grid lg:grid-cols-[1fr_360px] gap-6 mt-5">
+        <section className="glass p-8">
+          <span className="badge badge-green">
+            {job.isOpen ? "Open position" : "Closed"}
+          </span>
+          <h1 className="text-4xl font-black mt-4">{job.title}</h1>
+          <p className="text-lg font-semibold mt-2">{job.company}</p>
+          <div className="flex gap-4 text-[#667085] mt-4">
+            <span>{job.location}</span>
+            <span>•</span>
+            <span>{job.type}</span>
+          </div>
+          <hr className="my-7 border-[#eaecf0]" />
+          <h3 className="font-black text-lg">About the role</h3>
+          <p className="whitespace-pre-line text-[#475467] mt-3 leading-7">
+            {job.description}
+          </p>
+          <div className="flex flex-wrap gap-2 mt-6">
+            {job.skills.map((s: string) => (
+              <span className="badge badge-blue" key={s}>
+                {s}
+              </span>
+            ))}
+          </div>
+        </section>
+        <aside className="glass p-6 h-fit sticky top-24">
+          <h3 className="font-black text-xl">Ready to apply?</h3>
+          <p className="text-[#667085] mt-2">
+            Send a short note with your application.
+          </p>
+          <textarea
+            className="input mt-5 min-h-32"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Tell the employer why you're a good fit..."
+          />
+          <button
+            disabled={!job.isOpen || loading}
+            onClick={apply}
+            className="btn btn-primary w-full mt-3"
+          >
+            {loading ? "Applying…" : "Apply now"}
+          </button>
+        </aside>
+      </div>
+    </main>
+  );
+}
